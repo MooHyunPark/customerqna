@@ -14,6 +14,9 @@
 <p align="center">다음은 컨텐츠 예시입니다. 너무 많은 내용은 읽기 어렵습니다. 필요한 부분만을 사용하세요.</p>
 
 ---
+## 기능 설명
+[서버 타임 컨트롤러 설명](/java/kr/co/greenart/web/util/README.md)
+
 
 <p align="center">
   <h2>Built With</h2>
