@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import kr.co.greenart.web.customer.qna.QNA;
+
 @Mapper
 public interface QnAMapper {
 	@Insert({"insert into customerqna(title, content, username, password, is_secure)"

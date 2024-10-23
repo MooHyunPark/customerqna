@@ -1,4 +1,6 @@
-package kr.co.greenart.web.qna;
+package kr.co.greenart.web.customer.qna;
+
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,14 +12,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class QNA {
-	private int article_id;
+	private Integer articleId;
 	private String title;
 	private String content;
 	private String username;
 	private String password;
-	private int views;
-	private String created_at;
-	private String updated_at;
-	private int is_secure;
-	private int is_deleted;
+	private Integer views;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
+	private Boolean secure;
+	private Boolean deleted;
 }
