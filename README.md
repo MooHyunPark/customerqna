@@ -15,7 +15,7 @@
 
 ---
 ## 기능 설명
-[서버 타임 컨트롤러 설명](/java/kr/co/greenart/web/util/README.md)
+[서버 타임 컨트롤러 설명](/src/main/java/kr/co/greenart/web/util/README.md)
 
 
 <p align="center">
