@@ -7,10 +7,21 @@ import org.apache.ibatis.annotations.Mapper;
 
 public interface QNA_Service {
 	
-	Integer count();
+	Integer pageCount();
 	
-	List<QNA> findAll(int page);
+	List<QNA> findAll(int page, String sort);
 	boolean create(QNA qna);
-	QNA qnaDetail(int articleId);
-	void updateCount(int article_id);
+	
+	
+	QNA findById(Integer articleId);
+	QNA passwordCheckSuccess(Integer articleId);
+
+	boolean passwordCheck(int articleId, String password);
+
+	void delete(int articleId);
+	
+	QNA findByIdSecureCheckFalse(int articleId);
+
+	void updateQNAInfo(int articleId, String title, String username, String password, String content, boolean secure);
+
 }

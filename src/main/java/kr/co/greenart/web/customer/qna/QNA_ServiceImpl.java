@@ -5,27 +5,41 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.co.greenart.web.util.QNA_IsSecure;
+import kr.co.greenart.web.util.QNA_NotFoundException;
 
 @Service
 @Primary
 public class QNA_ServiceImpl implements QNA_Service {
-	
+
 	@Autowired
 	private QNA_Mapper mapper;
-	
+
 	@Override
-	public List<QNA> findAll(int page) {
-		
+	public List<QNA> findAll(int page, String sort) {
+
 		int offset = 0;
-		offset += (page - 1) * 5;
-		List<QNA> all = mapper.findAll(5, offset);
+		offset += (page - 1) * 20;
+		List<QNA> all = null;
+		
+		if (sort == null) {
+			all = mapper.findAll(20, offset);
+		} else if (sort.equals("created_at")) {
+			all = mapper.findAll(20, offset);
+		} else if (sort.equals("views")) {
+			all = mapper.viewFindAll(20, offset);
+		} else if (sort.equals("comments")) {
+			all = mapper.commentsFindAll(20, offset);
+		}
+		
 		return all;
 	}
 
 	@Override
 	public boolean create(QNA qna) {
 		Integer result = mapper.save(qna);
-		
 		if (result == 1) {
 			return true;
 		} else {
@@ -34,18 +48,81 @@ public class QNA_ServiceImpl implements QNA_Service {
 	}
 
 	@Override
-	public QNA qnaDetail(int articleId) {
-		QNA byPk = mapper.findByPk(articleId);
-		return byPk;
+	public Integer pageCount() {
+		
+		int count = mapper.count();
+		int totalPages = 1;
+		while (count > 20) {
+			totalPages++;
+			count -= 20;
+		}
+		return totalPages;
+	}
+	
+
+	@Override
+	public QNA passwordCheckSuccess(Integer articleId) {
+		QNA qna = mapper.findById(articleId);
+		if (qna == null) {
+			throw new QNA_NotFoundException(articleId);
+		}
+		int rows = mapper.updateCount(articleId);
+
+		if (rows == 1) {
+			qna.setViews(qna.getViews() + 1);
+		}
+		return qna;
+	}
+
+////////////////////////////////////////////////////////////////////
+	@Override
+	@Transactional
+	public QNA findById(Integer articleId) {
+		QNA qna = mapper.findById(articleId);
+		if (qna == null) {
+			throw new QNA_NotFoundException(articleId);
+		}
+
+		if (qna.getSecure()) {
+			throw new QNA_IsSecure(articleId);
+		}
+		int rows = mapper.updateCount(articleId);
+
+		if (rows == 1) {
+			qna.setViews(qna.getViews() + 1);
+		}
+		return qna;
 	}
 
 	@Override
-	public void updateCount(int article_id) {
-		mapper.updateCount(article_id);
+	public boolean passwordCheck(int articleId, String password) {
+		int rows = mapper.passwordCheck(articleId, password);
+		
+		if (rows == 1) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
-	public Integer count() {
-		return mapper.count();
+	public void delete(int articleId) {
+		mapper.updateDelete(articleId);
 	}
+
+	@Override
+	public QNA findByIdSecureCheckFalse(int articleId) {
+		QNA qna = mapper.findById(articleId);
+		if (qna == null) {
+			throw new QNA_NotFoundException(articleId);
+		}
+
+		return qna;
+	}
+
+	@Override
+	public void updateQNAInfo(int articleId, String title, String username, String password, String content, boolean secure) {
+		mapper.updateQNAInfo(articleId, title, username, password, content, secure);
+	}
+
+
 }

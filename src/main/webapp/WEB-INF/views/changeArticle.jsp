@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>글 작성하기</title>
+<title>게시글 수정</title>
 <style>
 body {
 	display: flex;
@@ -43,11 +43,14 @@ button {
 </style>
 </head>
 <body>
-
+		
+	<form id="qnaForm" method="post">
+	
+		<h3>게시글 수정 페이지</h3>
 	
 	
-	<form id="qnaForm">
-		<h3>게시글 작성 페이지</h3>
+		<input type="hidden" id="articleId" name="articleId" value="${ qna.articleId }">
+	
 		<label for="title">제목</label> <input type="text" id="title"
 			name="title" required> <label for="content">내용</label>
 		<textarea id="content" name="content" rows="4" required></textarea>
@@ -62,38 +65,9 @@ button {
 			<option value="true">비공개</option>
 		</select>
 
-
-		<button type="button" onclick="submitForm()">제출</button>
+		<button type="submit">제출</button>
 	</form>
 
-	<script>
-        function submitForm() {
-            const form = document.getElementById('qnaForm');
-            const formData = new FormData(form);
-            const jsonData = {};
-
-            formData.forEach((value, key) => {
-                jsonData[key] = value;
-            });
-
-            fetch('/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(jsonData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                alert('글이 성공적으로 제출되었습니다.');
-                window.location.href = '/qna';
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('글 제출에 실패했습니다.');
-            });
-        }
-    </script>
+	
 </body>
 </html>

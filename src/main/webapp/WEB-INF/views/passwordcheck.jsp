@@ -65,12 +65,24 @@ a {
 			const inputPassword = document.getElementById('password').value;
 			const qnaPassword = '${qna.password}';
 
-			if (inputPassword == qnaPassword) {
-				window.location.href = '/page1';
+			if (inputPassword === qnaPassword) {
+				const form = document.createElement('form');
+				form.method = 'POST';
+				form.action = '/success';
+
+				const articleIdField = document.createElement('input');
+				articleIdField.type = 'hidden';
+				articleIdField.name = 'articleId';
+				articleIdField.value = '${qna.articleId}';
+				form.appendChild(articleIdField);
+
+				document.body.appendChild(form);
+				form.submit();
 			} else {
 				alert('비밀번호가 일치하지 않습니다.');
 			}
 		}
 	</script>
+
 </body>
 </html>
