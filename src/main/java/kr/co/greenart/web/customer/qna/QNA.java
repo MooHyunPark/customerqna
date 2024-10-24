@@ -22,4 +22,5 @@ public class QNA {
 	private LocalDateTime updatedAt;
 	private Boolean secure;
 	private Boolean deleted;
+	private Integer comments;
 }

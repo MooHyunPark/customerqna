@@ -9,7 +9,7 @@ public interface QNA_Service {
 	
 	Integer pageCount();
 	
-	List<QNA> findAll(int page, String sort);
+	List<QNA> findAll(int page, String sort, String category, String query);
 	boolean create(QNA qna);
 	
 	

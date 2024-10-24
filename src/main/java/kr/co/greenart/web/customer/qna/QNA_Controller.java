@@ -12,19 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import jakarta.servlet.http.HttpServletResponse;
-import kr.co.greenart.web.util.QNA_IsSecure;
-import kr.co.greenart.web.util.QNA_NotFoundException;
 
 @Controller
 public class QNA_Controller {
@@ -36,20 +30,24 @@ public class QNA_Controller {
 
 	@GetMapping("/qna")
 	public String qna(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "none") String sort,
+			@RequestParam(defaultValue = "none") String category, @RequestParam(defaultValue = "none") String query,
 			Model model) {
-
 		if (!sort.equals("none")) {
 			sortSave = sort;
+		} else {
+			sortSave = "created_at";
 		}
 
 		int totalPages = service.pageCount();
-		List<QNA> qnaList = service.findAll(page, sortSave);
+		List<QNA> qnaList = service.findAll(page, sortSave, category, query);
 
 		model.addAttribute("qnaList", qnaList);
 		model.addAttribute("totalPages", totalPages);
 		model.addAttribute("currentPage", page);
 		model.addAttribute("sort", sortSave);
-
+		model.addAttribute("category", category);
+		model.addAttribute("query", query);
+		
 		return "qna";
 
 	}
@@ -126,5 +124,6 @@ public class QNA_Controller {
 		return "article";
 	}
 
+	
 
 }

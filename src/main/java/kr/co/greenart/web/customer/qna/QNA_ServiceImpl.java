@@ -1,5 +1,6 @@
 package kr.co.greenart.web.customer.qna;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,25 +17,30 @@ public class QNA_ServiceImpl implements QNA_Service {
 
 	@Autowired
 	private QNA_Mapper mapper;
-
+	
+	@Autowired
+	private SortQNA sortQNA;
+	
+	
 	@Override
-	public List<QNA> findAll(int page, String sort) {
+	public List<QNA> findAll(int page, String sort, String category, String query) {
 
-		int offset = 0;
-		offset += (page - 1) * 20;
-		List<QNA> all = null;
+		List<QNA> all = mapper.findAll();
 		
-		if (sort == null) {
-			all = mapper.findAll(20, offset);
-		} else if (sort.equals("created_at")) {
-			all = mapper.findAll(20, offset);
-		} else if (sort.equals("views")) {
-			all = mapper.viewFindAll(20, offset);
-		} else if (sort.equals("comments")) {
-			all = mapper.commentsFindAll(20, offset);
-		}
+		List<QNA> result = sortQNA.sort(page, sort, category, query, all);
 		
-		return all;
+//		for (int i = offset; i < offset+20; i++) {
+//			if (sort.equals("created_at")) {
+//				
+//			} else if (sort.equals("views")) {
+//				
+//			} else if (sort.equals("comments")) {
+//				
+//			}
+//		}
+		
+		//created_at views comments
+		return result;
 	}
 
 	@Override

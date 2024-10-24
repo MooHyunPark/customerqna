@@ -25,9 +25,8 @@ public interface QNA_Mapper {
 	
 	
 	// 게시글 목록(id, title, username, is_secure)
-	@Select({"select article_id, title, content, username, views, is_secure, password from customerqna where is_deleted = false order by created_at desc"
-		, "limit #{pageSize} offset #{offset}"
-	})
+	@Select({"select article_id, title, content, username, views, is_secure, password, comments from customerqna "
+			+ "where is_deleted = false order by created_at desc, article_id desc"})
 	@Results(id = "qnaList"
 			, value = {
 					@Result(column = "article_id", property = "articleId")
@@ -37,8 +36,9 @@ public interface QNA_Mapper {
 					, @Result(column = "views", property = "views")
 					, @Result(column = "is_secure", property = "secure")
 					, @Result(column = "password", property = "password")
+					, @Result(column = "comments", property = "comments")
 			})
-	List<QNA> findAll(int pageSize, int offset);
+	List<QNA> findAll();
 	
 	
 	@Select({"select article_id, title, content, username, views, is_secure, password from customerqna where is_deleted = false order by views desc, article_id desc"
