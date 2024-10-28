@@ -58,6 +58,8 @@ a {
 			id="password" name="password" required>
 		<button type="button" onclick="checkPassword()">제출</button>
 	</form>
+	
+	
 	<a href="/qna">메인화면으로 이동</a>
 
 	<script>

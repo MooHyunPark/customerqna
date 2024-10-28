@@ -37,6 +37,10 @@ table {
 	border-collapse: collapse; /* 테이블 셀 경계선을 합침 */
 }
 
+tr:hover {
+	background-color: #f0f0f0; /* 마우스 가져갔을 때 옅은 회색 */
+}
+
 th, td {
 	padding: 10px;
 	border: 1px solid #ddd; /* 모든 셀에 세로줄 추가 */
@@ -48,15 +52,15 @@ a {
 }
 
 th:first-child, td:first-child {
-	width: 200px; /* 첫 번째 열의 너비 설정 */
+	width: 70px; /* 첫 번째 열의 너비 설정 */
 }
 
 th:nth-child(2), td:nth-child(2) {
-	width: 500px; /* 두 번째 열의 너비 설정 */
+	min-width: 100px;
 }
 
 th:nth-child(3), td:nth-child(3) {
-	width: 100px; /* 세 번째 열의 너비 설정 */
+	width: 500px; /* 세 번째 열의 너비 설정 */
 }
 
 .sorting {
@@ -93,21 +97,51 @@ th:nth-child(3), td:nth-child(3) {
 	font-weight: bold;
 	background-color: #ddd;
 }
+
+.top {
+	display: flex;
+	align-content: center;
+	margin-left: 320px;
+}
+
+.top .link {
+	justify-content: flex-end;
+	margin-top: 33px;
+	margin-left: 200px;
+}
 </style>
 </head>
 <body>
 	<div class="main">
-		<h1>게시글 목록</h1>
+		<div class="top">
+			<h1>게시글 목록</h1>
+
+			<div class="link">
+				<c:choose>
+					<c:when test="${not empty sessionScope.admin}">
+						<span>(관리자 모드 활성 중)</span>
+						<a href="/logout" style="font-weight: bold;">로그 아웃</a>
+					</c:when>
+					<c:otherwise>
+						<a href="/login">관리자 로그인</a>
+					</c:otherwise>
+				</c:choose>
+			</div>
+
+		</div>
+
 		<div class="sorting">
 			<div>
 				<label for="sort">정렬 기준:</label> <select id="sort" name="sort"
-					onchange="sortArticles()">
+					onchange="searchArticles()">
 					<option value="created_at"
 						<c:if test="${sort == 'created_at'}">selected</c:if>>최신순</option>
+					<option value="old_order"
+						<c:if test="${sort == 'old_order'}">selected</c:if>>오래된순</option>
 					<option value="views"
-						<c:if test="${sort == 'views'}">selected</c:if>>조회수순</option>
+						<c:if test="${sort == 'views'}">selected</c:if>>조회순</option>
 					<option value="comments"
-						<c:if test="${sort == 'comments'}">selected</c:if>>댓글수순</option>
+						<c:if test="${sort == 'comments'}">selected</c:if>>댓글순</option>
 				</select>
 			</div>
 			<a href="/create" class="custom-link">게시글 작성</a>
@@ -121,39 +155,61 @@ th:nth-child(3), td:nth-child(3) {
 				<option value="username"
 					<c:if test="${category == 'username'}">selected</c:if>>작성자</option>
 			</select> <input type="text" id="searchQuery" placeholder="검색어를 입력하세요"
+				onkeypress="if(event.key==='Enter') searchArticles()"
 				<c:if test="${query != 'none'}">value="${query}"</c:if>>
 
 			<button onclick="searchArticles()">검색</button>
 		</div>
 		<table>
 			<tr>
+				<th>글 번호</th>
 				<th>작성자</th>
 				<th>제목</th>
 				<th>조회수</th>
+				<c:if test="${sessionScope.admin != null}">
+					<th>삭제</th>
+				</c:if>
 			</tr>
 			<c:forEach var="qna" items="${qnaList}">
-				<tr>
-					<td><a href="#" onclick="checkSecure('${qna.articleId}')">${qna.username}</a></td>
-					<td><a href="#" onclick="checkSecure('${qna.articleId}')">${qna.title}</a></td>
-					<td><a href="#" onclick="checkSecure('${qna.articleId}')">${qna.views}</a></td>
+				<tr style="cursor: pointer;">
+					<td onclick="checkSecure('${qna.articleId}')">${qna.articleId}</td>
+					<td onclick="checkSecure('${qna.articleId}')">${qna.username}</td>
+					<td onclick="checkSecure('${qna.articleId}')">${qna.title}<c:if
+							test="${qna.comments > 0}">(${qna.comments})</c:if>
+							<c:if test="${qna.adminComment == true}">(관리자 답변완료)</c:if></td>
+					<td onclick="checkSecure('${qna.articleId}')">${qna.views}</td>
+					<c:if test="${sessionScope.admin != null}">
+						<td><a href="#" style="color: red;"
+							onclick="event.stopPropagation(); confirmDelete('${qna.articleId}')">x</a>
+						</td>
+					</c:if>
 				</tr>
 			</c:forEach>
 		</table>
+
+
 		<div class="pagination">
 			<c:forEach var="i" begin="1" end="${totalPages}">
-				<a
-					href="/qna?page=${i}&category=${category}&query=${query}&sort=${sort}"
-					class="${i == currentPage ? 'active' : ''}">${i}</a>
+				<c:if
+					test="${(currentPage <= 4 && i <= 10) || (i >= currentPage - 4 && i <= currentPage + 5)}">
+					<a
+						href="/qna?page=${i}&category=${category}&query=${query}&sort=${sort}"
+						class="${i == currentPage ? 'active' : ''}">${i}</a>
+				</c:if>
 			</c:forEach>
 		</div>
+
+
 	</div>
 	<script>
+		function confirmDelete(articleId) {
+			const confirmation = confirm(articleId + "번 게시글을 삭제하시겠습니까?");
+			if (confirmation) {
+				window.location.href = "/adminDelete?articleId=" + articleId;
+			}
+		}
 		function checkSecure(articleId) {
 			window.location.href = `/qna/` + articleId;
-		}
-		function sortArticles() {
-			const sortValue = document.getElementById('sort').value;
-			window.location.href = `/qna?sort=` + sortValue;
 		}
 		function searchArticles() {
 			const sortValue = document.getElementById('sort').value;

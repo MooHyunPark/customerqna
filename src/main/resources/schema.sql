@@ -9,8 +9,22 @@ CREATE TABLE IF NOT EXISTS customerqna (
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	is_secure bit DEFAULT 0,
 	is_deleted bit DEFAULT 0,
-	comments INT DEFAULT 0
+	comments INT DEFAULT 0,
+	adminComment bit DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS comment (
+    comment_id INT PRIMARY KEY AUTO_INCREMENT,
+    article_id INT NOT NULL,
+    username VARCHAR(20) NOT NULL,
+    password VARCHAR(64) NOT NULL,
+    content TEXT NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    is_deleted bit DEFAULT 0,
+    FOREIGN KEY (article_id) REFERENCES customerqna(article_id) ON DELETE CASCADE
+);
+
 
 -- 1. 익명 고객센터 문의게시판 테이블을 생성하는 쿼리문을 작성해주세요
 -- 2. 글 작성

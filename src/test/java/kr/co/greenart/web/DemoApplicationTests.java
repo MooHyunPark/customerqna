@@ -36,7 +36,7 @@ class DemoApplicationTests {
 	@Test
 	@Order(2)
 	void testSelect() {
-		List<QNA> all = mapper.findAll();
+		List<QNA> all = mapper.findAll(10, 0, null, null, null);
 		assertNotEquals(0, all.size());
 	}
 

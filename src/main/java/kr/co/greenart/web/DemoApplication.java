@@ -1,5 +1,6 @@
 package kr.co.greenart.web;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,7 +21,9 @@ public class DemoApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		for (int i = 2; i < 25; i++) {
+		
+		
+		for (int i = 2; i < 30; i++) {
 			mapper.save(QNA.builder()
 					.title("title" + i)
 					.content("content" + i)
