@@ -23,7 +23,6 @@ public class QNA_ServiceImpl implements QNA_Service {
 		int offset = 0;
 		offset += (page - 1) * size;
 		List<QNA> result = mapper.findAll(size, offset, sort, category, query);
-		
 		return result;
 	}
 
@@ -88,6 +87,11 @@ public class QNA_ServiceImpl implements QNA_Service {
 		QNA qna = mapper.findById(articleId);
 		if (qna == null) {
 			throw new QNA_NotFoundException(articleId);
+		}
+		int rows = mapper.updateCount(articleId);
+
+		if (rows == 1) {
+			qna.setViews(qna.getViews() + 1);
 		}
 		return qna;
 	}

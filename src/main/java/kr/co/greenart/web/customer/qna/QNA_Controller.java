@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,6 +32,7 @@ public class QNA_Controller {
 	@Autowired
 	private QNA_Service service;
 
+	private static final String UPLOAD_DIR = "/uploads/";
 	private String sortSave = null;
 
 	@GetMapping("/qna")
@@ -86,7 +88,26 @@ public class QNA_Controller {
 	}
 
 	@PostMapping("/create")
-	public ResponseEntity<?> insert(@RequestBody QNA qna) {
+	public ResponseEntity<?> insert(@RequestParam String title,
+            @RequestParam String content,
+            @RequestParam String username,
+            @RequestParam String password,
+            @RequestParam Boolean secure,
+            @RequestParam MultipartFile file) {
+		
+		
+		QNA qna = QNA.builder().title(title).content(content).username(username)
+				.password(password).secure(secure).build();
+		
+		if (file != null) {
+			try {
+				qna.setFileName(file.getOriginalFilename());
+				qna.setFileData(file.getBytes());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		boolean result = service.create(qna);
 
 		Map<String, Object> resultMessage = new HashMap<>();

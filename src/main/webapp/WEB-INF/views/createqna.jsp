@@ -18,7 +18,7 @@ body {
 form {
 	display: flex;
 	flex-direction: column;
-	width: 300px;
+	width: 600px;
 }
 
 label {
@@ -39,61 +39,72 @@ button {
 	color: white;
 	border: none;
 	cursor: pointer;
+	width: 300px;
+	margin-left: 150px;
 }
+
+body {
+    width: 100%; /* 모든 입력 요소의 가로 길이를 100%로 설정 */
+}
+
 </style>
 </head>
 <body>
 
+
+	<div>
 	
-	
+	</div>
 	<form id="qnaForm">
-		<h3>게시글 작성 페이지</h3>
+		<h3>게시글 작성 페이지 <c:if test="${sessionScope.admin != null}">(관리자 모드)</c:if></h3>
 		<label for="title">제목</label> <input type="text" id="title"
 			name="title" required> <label for="content">내용</label>
-		<textarea id="content" name="content" rows="4" required></textarea>
+		<textarea id="content" name="content" rows="4" style="height: 150px;" required></textarea>
 
-		<label for="username">유저이름</label> <input type="text" id="username"
-			name="username" required> <label for="password">비밀번호</label>
-		<input type="password" id="password" name="password" required>.
+		<c:if test="${sessionScope.admin == null}">
+			<label for="username">유저이름</label>
+			<input type="text" id="username" name="username" required>
+			<label for="password">비밀번호</label>
+			<input type="password" id="password" name="password" required>
+		</c:if>
+		<c:if test="${sessionScope.admin != null}">
+			<input type="hidden" id="username" name="username" value="관리자" required>
+			<input type="hidden" id="password" name="password" value="관리자" required>
+		</c:if>
 
-		<label for="secure">비밀글 여부</label> <select id="secure"
-			name="secure" required>
+		<label for="secure" style="margin-bottom: 10px;">비밀글 여부</label> <select id="secure" name="secure"
+			style="height: 30px;" required>
 			<option value="false">공개</option>
 			<option value="true">비공개</option>
 		</select>
-
+		
+		<label for="file">파일 첨부</label>
+  		<input type="file" id="file" name="file">
 
 		<button type="button" onclick="submitForm()">제출</button>
 	</form>
 
 	<script>
-        function submitForm() {
-            const form = document.getElementById('qnaForm');
-            const formData = new FormData(form);
-            const jsonData = {};
+	function submitForm() {
+	    const form = document.getElementById('qnaForm');
+	    const formData = new FormData(form);
 
-            formData.forEach((value, key) => {
-                jsonData[key] = value;
-            });
+	    fetch('/create', {
+	        method: 'POST',
+	        body: formData
+	    })
+	    .then(response => response.json())
+	    .then(data => {
+	        console.log('Success:', data);
+	        alert('글이 성공적으로 제출되었습니다.');
+	        window.location.href = '/qna';
+	    })
+	    .catch((error) => {
+	        console.error('Error:', error);
+	        alert('글 제출에 실패했습니다.');
+	    });
+	}
 
-            fetch('/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(jsonData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                alert('글이 성공적으로 제출되었습니다.');
-                window.location.href = '/qna';
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('글 제출에 실패했습니다.');
-            });
-        }
     </script>
 </body>
 </html>

@@ -37,6 +37,7 @@ table {
 	border-collapse: collapse; /* 테이블 셀 경계선을 합침 */
 }
 
+
 tr:hover {
 	background-color: #f0f0f0; /* 마우스 가져갔을 때 옅은 회색 */
 }
@@ -50,6 +51,15 @@ a {
 	text-decoration: none; /* 밑줄 제거 */
 	color: black; /* 검은색으로 변경 */
 }
+
+th {
+	background-color: lightgreen;    
+   	color: white; 
+    height: 12px; /* 헤더의 높이를 30px로 설정 */
+    line-height: 12px; /* 텍스트의 수직 정렬 */
+}
+
+
 
 th:first-child, td:first-child {
 	width: 70px; /* 첫 번째 열의 너비 설정 */
@@ -101,7 +111,6 @@ th:nth-child(3), td:nth-child(3) {
 .top {
 	display: flex;
 	align-content: center;
-	margin-left: 320px;
 }
 
 .top .link {
@@ -114,16 +123,25 @@ th:nth-child(3), td:nth-child(3) {
 <body>
 	<div class="main">
 		<div class="top">
-			<h1>게시글 목록</h1>
-
+			<c:if test="${not empty sessionScope.admin}">
+				<h1 style="margin-left: 380px">게시글 목록</h1>
+			</c:if>
+			<c:if test="${empty sessionScope.admin}">
+				<h1 style="margin-left: 330px">게시글 목록</h1>
+			</c:if>
+			
+			
 			<div class="link">
 				<c:choose>
 					<c:when test="${not empty sessionScope.admin}">
-						<span>(관리자 모드 활성 중)</span>
-						<a href="/logout" style="font-weight: bold;">로그 아웃</a>
+						<div style="margin-left: -40px;">
+							<span>(관리자 모드 활성 중)</span>
+							<a href="/logout" style="font-weight: bold;">로그 아웃</a>	
+						</div>
+						
 					</c:when>
 					<c:otherwise>
-						<a href="/login">관리자 로그인</a>
+						<a href="/login" style="margin-left: 30px;">관리자 로그인</a>
 					</c:otherwise>
 				</c:choose>
 			</div>
@@ -142,6 +160,8 @@ th:nth-child(3), td:nth-child(3) {
 						<c:if test="${sort == 'views'}">selected</c:if>>조회순</option>
 					<option value="comments"
 						<c:if test="${sort == 'comments'}">selected</c:if>>댓글순</option>
+					<option value="adminComment"
+						<c:if test="${sort == 'adminComment'}">selected</c:if>>관리자 답글 없는 것만</option>
 				</select>
 			</div>
 			<a href="/create" class="custom-link">게시글 작성</a>
@@ -174,7 +194,9 @@ th:nth-child(3), td:nth-child(3) {
 				<tr style="cursor: pointer;">
 					<td onclick="checkSecure('${qna.articleId}')">${qna.articleId}</td>
 					<td onclick="checkSecure('${qna.articleId}')">${qna.username}</td>
-					<td onclick="checkSecure('${qna.articleId}')">${qna.title}<c:if
+					<td onclick="checkSecure('${qna.articleId}')">
+							<c:if test="${qna.secure == true}">&#x1F512;</c:if> 
+							${qna.title}<c:if
 							test="${qna.comments > 0}">(${qna.comments})</c:if>
 							<c:if test="${qna.adminComment == true}">(관리자 답변완료)</c:if></td>
 					<td onclick="checkSecure('${qna.articleId}')">${qna.views}</td>

@@ -20,13 +20,10 @@ import org.apache.ibatis.type.JdbcType;
 public interface QNA_Mapper {
 	// 글 작성
 	// @Options 는 h2db의 last_insert_id
-	@Insert({"insert into customerqna(title, content, username, password, is_secure)"
-		, "values (#{title}, #{content}, #{username}, #{password}, #{secure})"})
+	@Insert({"insert into customerqna(title, content, username, password, is_secure, fileName, fileData)"
+		, "values (#{title}, #{content}, #{username}, #{password}, #{secure}, #{fileName}, #{fileData})"})
 	@Options(useGeneratedKeys = true, keyProperty = "articleId")
 	int save(QNA qna);
-	
-	
-	
 	
 	
 	
@@ -119,7 +116,6 @@ public interface QNA_Mapper {
 		        SELECT("article_id, title, content, username, views, is_secure, password, comments, adminComment");
 		        FROM("customerqna");
 		        WHERE("is_deleted = false");
-
 		        if (category != null && query != null && !category.equals("none") && !query.equals("none")) {
 		            if ("title".equals(category)) {
 		                WHERE("title LIKE '%' || #{query} || '%'");
@@ -129,6 +125,11 @@ public interface QNA_Mapper {
 		                WHERE("username LIKE '%' || #{query} || '%'");
 		            }
 		        }
+		        
+		        if ("adminComment".equals(sort)) {
+		        	System.out.println("asdfasdfasdfasdf");
+	            	WHERE("adminComment = false");
+	            }
 
 		        if ("views".equals(sort)) {
 		            ORDER_BY("views desc, article_id desc");

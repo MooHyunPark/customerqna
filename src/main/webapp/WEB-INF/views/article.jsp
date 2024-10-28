@@ -112,7 +112,9 @@ footer p {
 }
 
 #commentForm {
-	margin-left: 80px;
+	text-align: center; 
+	justify-content: center !important; 
+	align-items: center !important;
 }
 </style>
 </head>
@@ -126,8 +128,14 @@ footer p {
 				<h3>조회수 : ${qna.views}</h3>
 			</div>
 			<div>
-				<button onclick="checkPassword('${qna.articleId}', 'edit')">수정</button>
-				<button onclick="checkPassword('${qna.articleId}', 'delete')">삭제</button>
+				<c:if test="${sessionScope.admin == null}">
+					<button onclick="checkPassword('${qna.articleId}', 'edit')">수정</button>
+					<button onclick="checkPassword('${qna.articleId}', 'delete')">삭제</button>
+				</c:if>
+				<c:if test="${sessionScope.admin != null}">
+					<a href="/change?articleId=${qna.articleId}" style="text-decoration: none; color: black;">수정</a>
+					<a href="/delete?articleId=${qna.articleId}" style="text-decoration: none; color: black;">삭제</a>
+				</c:if>
 				<a href="/qna" class="custom-link">메인으로 이동</a>
 			</div>
 		</header>
@@ -182,8 +190,7 @@ footer p {
 		<button id="dialogBtn" onclick="showCommentForm()">댓글 작성</button>
 		<!-- 댓글 입력 폼 -->
 		<div id="commentFormWrapper" style="display: none; margin-top: 20px;">
-			<form id="commentForm" action="/submitComment" method="POST"
-				style="text-align: center;">
+			<form id="commentForm" action="/submitComment" method="POST">
 				<input type="hidden" name="articleId" value="${qna.articleId}">
 				<div class="commentDetail">
 
@@ -425,32 +432,37 @@ function submitPassword(articleId, action) {
     const dialog = document.getElementById('passwordDialog');
 
     if (password) {
-        fetch(`/checkPassword`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ articleId, password })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                if (action === 'edit') {
-                    window.location.href = `/change?articleId=` + articleId;
-                } else if (action === 'delete') {
-                    alert('게시글을 삭제하였습니다.');
-                    window.location.href = `/delete?articleId=` + articleId;
+    	if (passwordInput != '관리자') {
+    		fetch(`/checkPassword`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ articleId, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (action === 'edit') {
+                        window.location.href = `/change?articleId=` + articleId;
+                    } else if (action === 'delete') {
+                        alert('게시글을 삭제하였습니다.');
+                        window.location.href = `/delete?articleId=` + articleId;
+                    }
+                } else {
+                    alert('비밀번호가 일치하지 않습니다.');
                 }
-            } else {
-                alert('비밀번호가 일치하지 않습니다.');
-            }
-            closeDialog();
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('오류가 발생했습니다.');
-            closeDialog();
-        });
+                closeDialog();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('오류가 발생했습니다.');
+                closeDialog();
+            });
+ 		} else {
+ 			 alert('비밀번호가 일치하지 않습니다.');
+ 		}
+        
     }
 }
 

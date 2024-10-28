@@ -2,6 +2,8 @@ package kr.co.greenart.web.customer.qna;
 
 import java.time.LocalDateTime;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +26,8 @@ public class QNA {
 	private Boolean deleted;
 	private Integer comments;
 	private Boolean adminComment;
+	private String fileName;
+	private byte[] fileData;
 }
 
 /*

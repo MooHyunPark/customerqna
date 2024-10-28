@@ -10,7 +10,9 @@ CREATE TABLE IF NOT EXISTS customerqna (
 	is_secure bit DEFAULT 0,
 	is_deleted bit DEFAULT 0,
 	comments INT DEFAULT 0,
-	adminComment bit DEFAULT 0
+	adminComment bit DEFAULT 0,
+	fileName VARCHAR(255),
+    fileData LONGBLOB
 );
 
 CREATE TABLE IF NOT EXISTS comment (
