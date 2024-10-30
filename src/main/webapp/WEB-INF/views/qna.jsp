@@ -28,7 +28,7 @@ body, html {
 }
 
 #searchQuery {
-	width: 700px;
+	width: 800px;
 }
 
 table {
@@ -53,7 +53,7 @@ a {
 }
 
 th {
-	background-color: lightgreen;    
+	background-color: green;    
    	color: white; 
     height: 12px; /* 헤더의 높이를 30px로 설정 */
     line-height: 12px; /* 텍스트의 수직 정렬 */
@@ -124,24 +124,24 @@ th:nth-child(3), td:nth-child(3) {
 	<div class="main">
 		<div class="top">
 			<c:if test="${not empty sessionScope.admin}">
-				<h1 style="margin-left: 380px">게시글 목록</h1>
+				<h1 style="margin-left: 450px">게시글 목록</h1>
 			</c:if>
 			<c:if test="${empty sessionScope.admin}">
-				<h1 style="margin-left: 330px">게시글 목록</h1>
+				<h1 style="margin-left: 380px">게시글 목록</h1>
 			</c:if>
 			
 			
 			<div class="link">
 				<c:choose>
 					<c:when test="${not empty sessionScope.admin}">
-						<div style="margin-left: -40px;">
+						<div style="margin-left: 20px;">
 							<span>(관리자 모드 활성 중)</span>
 							<a href="/logout" style="font-weight: bold;">로그 아웃</a>	
 						</div>
 						
 					</c:when>
 					<c:otherwise>
-						<a href="/login" style="margin-left: 30px;">관리자 로그인</a>
+						<a href="/login" style="margin-left: 100px;">관리자 로그인</a>
 					</c:otherwise>
 				</c:choose>
 			</div>
@@ -164,7 +164,15 @@ th:nth-child(3), td:nth-child(3) {
 						<c:if test="${sort == 'adminComment'}">selected</c:if>>관리자 답글 없는 것만</option>
 				</select>
 			</div>
-			<a href="/create" class="custom-link">게시글 작성</a>
+			
+			<div>
+				<c:if test="${sessionScope.admin != null}">
+					<a href="/questionCreate" class="custom-link" style="margin-right: 30px;">자주 묻는 질문 추가</a>
+				</c:if>
+				<a href="/question" class="custom-link" style="margin-right: 30px;">자주 묻는 질문</a>
+				<a href="/create" class="custom-link">게시글 작성</a>
+			</div>
+			
 		</div>
 		<div class="search-bar">
 			<select id="searchCategory">
@@ -186,9 +194,11 @@ th:nth-child(3), td:nth-child(3) {
 				<th>작성자</th>
 				<th>제목</th>
 				<th>조회수</th>
+				<th>등록일자</th>
 				<c:if test="${sessionScope.admin != null}">
 					<th>삭제</th>
 				</c:if>
+				
 			</tr>
 			<c:forEach var="qna" items="${qnaList}">
 				<tr style="cursor: pointer;">
@@ -200,6 +210,7 @@ th:nth-child(3), td:nth-child(3) {
 							test="${qna.comments > 0}">(${qna.comments})</c:if>
 							<c:if test="${qna.adminComment == true}">(관리자 답변완료)</c:if></td>
 					<td onclick="checkSecure('${qna.articleId}')">${qna.views}</td>
+					<td onclick="checkSecure('${qna.articleId}')">${qna.formatCreatedAt}</td>
 					<c:if test="${sessionScope.admin != null}">
 						<td><a href="#" style="color: red;"
 							onclick="event.stopPropagation(); confirmDelete('${qna.articleId}')">x</a>

@@ -1,6 +1,7 @@
 package kr.co.greenart.web.customer.qna;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,8 +27,20 @@ public class QNA {
 	private Boolean deleted;
 	private Integer comments;
 	private Boolean adminComment;
-	private String fileName;
-	private byte[] fileData;
+	private String formatCreatedAt;
+	private String formatUpdatedAt;
+	
+	public void formatDateTime(LocalDateTime createdAt, LocalDateTime updatedAt) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		if (createdAt != null) {
+			formatCreatedAt = createdAt.format(formatter);
+		}
+		
+		if (updatedAt != null) {
+			formatUpdatedAt = updatedAt.format(formatter);
+		}
+		
+	}
 }
 
 /*

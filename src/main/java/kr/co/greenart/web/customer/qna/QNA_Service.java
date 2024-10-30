@@ -36,5 +36,10 @@ public interface QNA_Service {
 	boolean editCommentWithPassword(Integer commentId, String content, String password);
 	boolean deleteComment(Integer commentId, Integer articleId);
 	boolean deleteCommentWithPassword(Integer commentId, String password, Integer articleId);
+	void insertFileData(FileData fileData);
+	List<FileData> getFileDataList(int id);
+	List<Question> getQuestion();
+	boolean saveFaq(FAQ faq);
+	boolean deleteFaqById(int id);
 
 }

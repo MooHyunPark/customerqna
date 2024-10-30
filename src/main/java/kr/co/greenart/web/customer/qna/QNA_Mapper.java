@@ -3,6 +3,7 @@ package kr.co.greenart.web.customer.qna;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
@@ -20,13 +21,13 @@ import org.apache.ibatis.type.JdbcType;
 public interface QNA_Mapper {
 	// 글 작성
 	// @Options 는 h2db의 last_insert_id
-	@Insert({"insert into customerqna(title, content, username, password, is_secure, fileName, fileData)"
-		, "values (#{title}, #{content}, #{username}, #{password}, #{secure}, #{fileName}, #{fileData})"})
+	@Insert({"insert into customerqna(title, content, username, password, is_secure)"
+		, "values (#{title}, #{content}, #{username}, #{password}, #{secure})"})
 	@Options(useGeneratedKeys = true, keyProperty = "articleId")
 	int save(QNA qna);
 	
-	
-	
+	@Insert("insert into filedata(article_id, fileName) values (#{article_id}, #{fileName})")
+	Integer saveFile(FileData fileData);
 	
 	@Select({"select article_id, title, content, username, views, is_secure, password from customerqna where is_deleted = false order by views desc, article_id desc"
 		, "limit #{pageSize} offset #{offset}"
@@ -102,6 +103,8 @@ public interface QNA_Mapper {
 					, @Result(column = "password", property = "password")
 					, @Result(column = "comments", property = "comments")
 					, @Result(column = "adminComment", property = "adminComment")
+					, @Result(column = "created_at", property = "createdAt")
+					, @Result(column = "updated_at", property = "updatedAt")
 			})
 	List<QNA> findAll(Integer limit, Integer offset, String sort, String category, String query);
 	
@@ -113,7 +116,7 @@ public interface QNA_Mapper {
 	class SQLProvider {
 		public static String findAll(@Param("limit") Integer limit, @Param("offset") Integer offset, @Param("sort") String sort, @Param("category") String category, @Param("query") String query) {
 		    return new SQL() {{
-		        SELECT("article_id, title, content, username, views, is_secure, password, comments, adminComment");
+		        SELECT("article_id, title, content, username, views, is_secure, password, comments, adminComment, created_at, updated_at");
 		        FROM("customerqna");
 		        WHERE("is_deleted = false");
 		        if (category != null && query != null && !category.equals("none") && !query.equals("none")) {
@@ -176,6 +179,11 @@ public interface QNA_Mapper {
 	@Update("update customerqna set adminComment = #{adminComment} where article_id = #{article_id}")
 	Integer updateAdminComment(int article_id, boolean adminComment);
 	
+	// 파일 가져오기
+	@Select("select article_id, fileName from filedata where article_id = #{id}")
+	List<FileData> getFileDataList(int id);
+	
+	
 	// 댓글 가져오기
 	@Select("select * from comment where article_id = #{article_id} and is_deleted = false")
 	List<Comment> GetCommentsByArticleId(int article_id);
@@ -192,8 +200,20 @@ public interface QNA_Mapper {
 
 	@Update("update comment set content = #{content} where comment_id = #{commentId} and password = #{password}")
 	Integer editCommentWithPassword(Integer commentId, String password, String content);
+
 	
 	
+	// 자주 묻는 질문 목록 리스트 들고오기
+	@Select("select * from question")
+	List<Question> getQuestion();
+
+	// 자주 묻는 질문 추가하기
+	@Insert("insert into question(question_title, question_detail) values (#{question_title}, #{question_detail})")
+	Integer saveFaq(FAQ faq);
+	
+	
+	@Delete("delete from question where question_id = #{id}")
+	Integer deleteFaqById(int id);
 }
 
 

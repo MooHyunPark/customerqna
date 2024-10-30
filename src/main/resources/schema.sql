@@ -10,9 +10,8 @@ CREATE TABLE IF NOT EXISTS customerqna (
 	is_secure bit DEFAULT 0,
 	is_deleted bit DEFAULT 0,
 	comments INT DEFAULT 0,
-	adminComment bit DEFAULT 0,
-	fileName VARCHAR(255),
-    fileData LONGBLOB
+	adminComment bit DEFAULT 0
+	
 );
 
 CREATE TABLE IF NOT EXISTS comment (
@@ -27,6 +26,19 @@ CREATE TABLE IF NOT EXISTS comment (
     FOREIGN KEY (article_id) REFERENCES customerqna(article_id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS filedata (
+   	file_id INT PRIMARY KEY AUTO_INCREMENT,
+    article_id INT NOT NULL,
+    fileName VARCHAR(255),
+    FOREIGN KEY (article_id) REFERENCES customerqna(article_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS question (
+   	question_id INT PRIMARY KEY AUTO_INCREMENT,
+    question_title VARCHAR(255) NOT NULL,
+    question_detail VARCHAR(255)
+);
+
 
 -- 1. 익명 고객센터 문의게시판 테이블을 생성하는 쿼리문을 작성해주세요
 -- 2. 글 작성
@@ -37,5 +49,8 @@ CREATE TABLE IF NOT EXISTS comment (
 -- 6. views count 수정(1 증가)
 -- 7. 글 논리 삭제(pk 및 password 일치) : is_deleted => 1로 수정
 insert into customerqna(title, content, username, password, is_secure) values ('제목1', '내용1', '유저이름1', '유저비번1', 1);
-
+insert into question(question_title, question_detail) values ('자주 묻는 질문 1', '자주 묻는 질문 1에 대한 내용');
+insert into question(question_title, question_detail) values ('자주 묻는 질문 2', '자주 묻는 질문 2에 대한 내용');
+insert into question(question_title, question_detail) values ('자주 묻는 질문 3', '자주 묻는 질문 3에 대한 내용');
+insert into question(question_title, question_detail) values ('자주 묻는 질문 4', '자주 묻는 질문 4에 대한 내용');
 

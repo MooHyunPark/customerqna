@@ -37,6 +37,7 @@ header {
 	justify-content: space-between; /* 양 끝에 배치 */
 	border: 1px solid #ddd; /* 헤더 테두리 */
 	padding: 10px;
+	width: 60%;
 }
 
 header div {
@@ -75,6 +76,7 @@ footer p {
 	margin-top: 20px;
 	border-top: 1px solid #ddd; /* 구분선 추가 */
 	padding-top: 20px;
+	width: 60%;
 }
 
 .comment {
@@ -112,134 +114,154 @@ footer p {
 }
 
 #commentForm {
-	text-align: center; 
-	justify-content: center !important; 
+	text-align: center;
+	justify-content: center !important;
 	align-items: center !important;
 }
 </style>
 </head>
 <body>
-	<article>
-		<header>
-			<input type="hidden" id="articleId" value="${qna.articleId}">
-			<div>
-				<h3>제목 : ${qna.title}</h3>
-				<h3>작성자 : ${qna.username}</h3>
-				<h3>조회수 : ${qna.views}</h3>
-			</div>
-			<div>
-				<c:if test="${sessionScope.admin == null}">
-					<button onclick="checkPassword('${qna.articleId}', 'edit')">수정</button>
-					<button onclick="checkPassword('${qna.articleId}', 'delete')">삭제</button>
-				</c:if>
-				<c:if test="${sessionScope.admin != null}">
-					<a href="/change?articleId=${qna.articleId}" style="text-decoration: none; color: black;">수정</a>
-					<a href="/delete?articleId=${qna.articleId}" style="text-decoration: none; color: black;">삭제</a>
-				</c:if>
-				<a href="/qna" class="custom-link">메인으로 이동</a>
-			</div>
-		</header>
-		<div class="content">
-			<p>${qna.content}</p>
+	<header>
+		<input type="hidden" id="articleId" value="${qna.articleId}">
+		<div>
+			<h3>제목 : ${qna.title}</h3>
+			<h3>작성자 : ${qna.username}</h3>
+			<h3>조회수 : ${qna.views}</h3>
 		</div>
-
-
-		<div class="comments-section">
-			<c:choose>
-				<c:when test="${empty comments}">
-					<h5>댓글이 없습니다</h5>
-				</c:when>
-				<c:otherwise>
-					<h5>댓글목록 (댓글 수: ${fn:length(comments)}개)</h5>
-					<c:forEach var="comment" items="${comments}">
-						<div class="comment">
-							<p>
-								<strong>${comment.username}:</strong> ${comment.content}
-								<button
-									onclick="editComment('${comment.comment_id}', '${ admin }')">수정</button>
-								<button
-									onclick="deleteComment('${comment.comment_id}', '${ admin }')"
-									style="margin-left: -10px;">삭제</button>
-								/ 작성일:${comment.formatCreatedAt}
-							</p>
-						</div>
-
-					</c:forEach>
-				</c:otherwise>
-			</c:choose>
+		<div>
+			<c:if test="${sessionScope.admin == null}">
+				<button onclick="checkPassword('${qna.articleId}', 'edit')">수정</button>
+				<button onclick="checkPassword('${qna.articleId}', 'delete')">삭제</button>
+			</c:if>
+			<c:if test="${sessionScope.admin != null}">
+				<a href="/change?articleId=${qna.articleId}"
+					style="text-decoration: none; color: black;">수정</a>
+				<a href="/delete?articleId=${qna.articleId}"
+					style="text-decoration: none; color: black;">삭제</a>
+			</c:if>
+			<a href="/qna" class="custom-link">메인으로 이동</a>
 		</div>
-
-		<!-- 댓글 수정/삭제 다이얼로그 -->
-		<div id="commentDialog" class="dialog" style="display: none;">
+	</header>
+	<div style="border: 1px solid #ccc; width: 61%; margin-top: 20px;">
+		<div style="display: flex; padding: 10px; align-items: flex-start;">
+			<h5 style="margin-right: 30px; align-self: flex-start; ">첨부 파일 목록
+				:</h5>
 			<div style="display: flex;">
-				<p id="dialogContent">비밀번호를 입력하세요:</p>
-				<textarea id="dialogTextarea" style="display: none; height: 15px; resize: none; margin-top: 18px; margin-left: 20px;"></textarea>
-				<c:if test="${sessionScope.admin == null}">
-					<p style="margin-left: 20px;">비밀번호:</p>
-				</c:if>
-				<input type="password" id="dialogPassword" style="height: 15px; margin-top: 18px; margin-left: 20px;">
-				<button id="dialogSubmitBtn" style="height: 25px; margin-top: 15px; margin-left: 20px;">제출</button>
-				<button onclick="closeDialogAnother()" style="height: 25px; margin-top: 15px">취소</button>
-				<input type="hidden" id="hiddenCommentId">
+				<c:forEach var="file" items="${fileDataList}">
+					<a href="/download?fileName=${file.fileName}" style="margin-top: 20px;">${file.fileName}</a>
+				</c:forEach>
 			</div>
-
 		</div>
+	</div>
+
+
+	<div class="content"
+		style="border: 1px solid #ccc; width: 61%; margin-top: 20px;">
+		<p style="margin: 10px;">${qna.content}</p>
+	</div>
 
 
 
-		<button id="dialogBtn" onclick="showCommentForm()">댓글 작성</button>
-		<!-- 댓글 입력 폼 -->
-		<div id="commentFormWrapper" style="display: none; margin-top: 20px;">
-			<form id="commentForm" action="/submitComment" method="POST">
-				<input type="hidden" name="articleId" value="${qna.articleId}">
-				<div class="commentDetail">
-
-					<div style="display: flex;">
-						<c:if test="${sessionScope.admin != null}">
-							<input type="hidden" id="username" name="username" value="관리자">
-							<input type="hidden" id="password" name="password" value="관리자">
-						</c:if>
-						<c:if test="${sessionScope.admin == null}">
-							<div>
-								<label for="username">아이디:</label> <input type="text"
-									id="username" name="username" required
-									style="height: 10px; width: 100px; padding: 5px; margin-bottom: 10px;">
-							</div>
-							<div style="margin-left: 20px;">
-								<label for="password">비밀번호:</label> <input type="password"
-									id="password" name="password" required
-									style="height: 10px; width: 100px; padding: 5px; margin-bottom: 10px;">
-							</div>
-						</c:if>
+	<div class="comments-section">
+		<c:choose>
+			<c:when test="${empty comments}">
+				<h5>댓글이 없습니다</h5>
+			</c:when>
+			<c:otherwise>
+				<h5>댓글목록 (댓글 수: ${fn:length(comments)}개)</h5>
+				<c:forEach var="comment" items="${comments}">
+					<div class="comment">
+						<p>
+							<strong>${comment.username}:</strong> ${comment.content}
+							<button
+								onclick="editComment('${comment.comment_id}', '${ admin }')">수정</button>
+							<button
+								onclick="deleteComment('${comment.comment_id}', '${ admin }')"
+								style="margin-left: -10px;">삭제</button>
+							/ 작성일:${comment.formatCreatedAt}
+						</p>
 					</div>
 
-				</div>
+				</c:forEach>
+			</c:otherwise>
+		</c:choose>
+	</div>
+
+	<!-- 댓글 수정/삭제 다이얼로그 -->
+	<div id="commentDialog" class="dialog" style="display: none;">
+		<div style="display: flex;">
+			<p id="dialogContent">비밀번호를 입력하세요:</p>
+			<textarea id="dialogTextarea"
+				style="display: none; height: 15px; resize: none; margin-top: 18px; margin-left: 20px;"></textarea>
+			<c:if test="${sessionScope.admin == null}">
+				<p style="margin-left: 20px;">비밀번호:</p>
+			</c:if>
+			<input type="password" id="dialogPassword"
+				style="height: 15px; margin-top: 18px; margin-left: 20px;">
+			<button id="dialogSubmitBtn"
+				style="height: 25px; margin-top: 15px; margin-left: 20px;">제출</button>
+			<button onclick="closeDialogAnother()"
+				style="height: 25px; margin-top: 15px">취소</button>
+			<input type="hidden" id="hiddenCommentId">
+		</div>
+
+	</div>
+
+
+
+	<button id="dialogBtn" onclick="showCommentForm()">댓글 작성</button>
+	<!-- 댓글 입력 폼 -->
+	<div id="commentFormWrapper" style="display: none; margin-top: 20px;">
+		<form id="commentForm" action="/submitComment" method="POST">
+			<input type="hidden" name="articleId" value="${qna.articleId}">
+			<div class="commentDetail">
 
 				<div style="display: flex;">
-					<div style="text-align: initial;">
-						<label for="content" style="vertical-align: top;">내용:</label>
-						<textarea id="content" name="content" required
-							style="height: 12px; width: 500px; resize: none; padding: 5px; margin-bottom: 10px;"></textarea>
-					</div>
-					<button type="submit"
-						style="height: 30px; margin-top: -4px; margin-left: 10px;">댓글제출</button>
+					<c:if test="${sessionScope.admin != null}">
+						<input type="hidden" id="username" name="username" value="관리자">
+						<input type="hidden" id="password" name="password" value="관리자">
+					</c:if>
+					<c:if test="${sessionScope.admin == null}">
+						<div>
+							<label for="username">아이디:</label> <input type="text"
+								id="username" name="username" required
+								style="height: 10px; width: 100px; padding: 5px; margin-bottom: 10px;">
+						</div>
+						<div style="margin-left: 20px;">
+							<label for="password">비밀번호:</label> <input type="password"
+								id="password" name="password" required
+								style="height: 10px; width: 100px; padding: 5px; margin-bottom: 10px;">
+						</div>
+					</c:if>
 				</div>
-			</form>
-		</div>
+
+			</div>
+
+			<div style="display: flex;">
+				<div style="text-align: initial;">
+					<label for="content" style="vertical-align: top;">내용:</label>
+					<textarea id="content" name="content" required
+						style="height: 12px; width: 500px; resize: none; padding: 5px; margin-bottom: 10px;"></textarea>
+				</div>
+				<button type="submit"
+					style="height: 30px; margin-top: -4px; margin-left: 10px;">댓글제출</button>
+			</div>
+		</form>
+	</div>
 
 
 
-		<div id="passwordDialog" class="password-dialog">
-			<p>비밀번호를 입력하세요:</p>
-			<input type="password" id="passwordInput">
-			<button id="confirmBtn" onclick="submitPassword()">확인</button>
-			<button id="cancelBtn" onclick="closeDialog()">취소</button>
-		</div>
+	<div id="passwordDialog" class="password-dialog">
+		<p>비밀번호를 입력하세요:</p>
+		<input type="password" id="passwordInput">
+		<button id="confirmBtn" onclick="submitPassword()">확인</button>
+		<button id="cancelBtn" onclick="closeDialog()">취소</button>
+	</div>
 
 
-		<footer>
-			<p>작성일 : ${qna.createdAt}</p>
-		</footer>
+	<footer>
+		<p>작성일 : ${qna.createdAt}</p>
+	</footer>
 </body>
 <script>
 const articleId = document.getElementById('articleId').value;

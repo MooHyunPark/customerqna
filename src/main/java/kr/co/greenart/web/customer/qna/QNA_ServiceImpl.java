@@ -23,6 +23,10 @@ public class QNA_ServiceImpl implements QNA_Service {
 		int offset = 0;
 		offset += (page - 1) * size;
 		List<QNA> result = mapper.findAll(size, offset, sort, category, query);
+		
+		for (int i = 0; i < result.size(); i++) {
+			result.get(i).formatDateTime(result.get(i).getCreatedAt(), result.get(i).getUpdatedAt());
+		}
 		return result;
 	}
 
@@ -189,6 +193,43 @@ public class QNA_ServiceImpl implements QNA_Service {
 		if (count == 0) {
 			mapper.updateAdminComment(articleId, false);
 		}
+	}
+
+	@Override
+	public void insertFileData(FileData fileData) {
+		mapper.saveFile(fileData);
+	}
+
+	@Override
+	public List<FileData> getFileDataList(int id) {
+		List<FileData> list = mapper.getFileDataList(id);
+		return list;
+	}
+
+	@Override
+	public List<Question> getQuestion() {
+
+		List<Question> list = mapper.getQuestion();
+		return list;
+	}
+
+	@Override
+	public boolean saveFaq(FAQ faq) {
+		Integer result = mapper.saveFaq(faq);
+		if (result == 1) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean deleteFaqById(int id) {
+		Integer result = mapper.deleteFaqById(id);
+		
+		if (result == 1) {
+			return true;
+		}
+		return false;
 	}
 
 

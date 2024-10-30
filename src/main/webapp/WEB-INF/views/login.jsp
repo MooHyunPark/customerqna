@@ -40,13 +40,13 @@
         }
         
         h3 {
-      		margin-left: 130px;
+      		margin-left: 92px;
         }
     </style>
 </head>
 <body>
     <form id="loginForm" method="post" action="/login">
-        <h3>로그인</h3>
+        <h3>관리자 로그인</h3>
         <label for="username">아이디</label>
         <input type="text" id="username" name="username" required>
         <label for="password">비밀번호</label>
