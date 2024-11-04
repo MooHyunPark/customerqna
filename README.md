@@ -137,7 +137,10 @@ H2DB 라이브러리 추가 및 활용(pom.xml파일과 properties 파일 수정
 
 1. 테이블 정의 : 기본키(Pk), 외래키(Fk), 널 허용 여부(Null/Not Null), 자동 증가(Auto Increment)설정을 포함한 테이블 정의.
 2. 테이블 생성 : customerqna, comment, filedata, question 테이블 생성 및 외래키를 구성하고 테스트 용 데이터를 추가.
+
+<p align="center">(sql파일의 작성 내용 중 일부)</p>
 <p align="center"><img src="https://github.com/user-attachments/assets/b1cd773c-52c1-46b7-a114-15dc377726ad" width="700"></p>
+
 3. Test Mapper를 작성한 뒤 h2-console실시간 입출력 테스트
 
 
