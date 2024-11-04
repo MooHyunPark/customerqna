@@ -110,45 +110,53 @@
    
    Development
    <br><br>
-    <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white">
-    <img src="https://img.shields.io/badge/Eclipse-2C2255?style=for-the-badge&logo=eclipse&logoColor=white">
+    <img src="https://img.shields.io/badge/H2DB-%234479A1?labelColor=black">
+    <img src="https://img.shields.io/badge/Eclipse-2C2255?logo=eclipse&logoColor=white">
+    <img src="https://img.shields.io/badge/Spring%20boot-%236DB33F?logo=springboot&logoColor=white">
     <img src="https://img.shields.io/badge/javascript-%23F7DF1E?logo=javascript&logoColor=black">
     <img src="https://img.shields.io/badge/html-%23E34F26?logo=html5&logoColor=black">
  
 
+
 Enviroment
 <br><br>
-<img src="https://img.shields.io/badge/VSCode-0078D4?style=for-the-badge&logo=visual%20studio%20code&logoColor=white">
+<img src="https://img.shields.io/badge/VSCode-0078D4?logo=visual%20studio%20code&logoColor=white">
 <img src="https://img.shields.io/badge/apachetomcat-%23F8DC75?logo=apachetomcat&logoColor=black">
 <img src="https://img.shields.io/badge/git-%23F05032?logo=git&logoColor=black">
 
 
 
+
+
+
 ## Development setup
 
-데이터베이스 서버 구축(권한 설정 포함), 테이블 논리 구성, 작업 프로젝트 생성, 공유 repository 생성 등 역할을 분배하여 개발환경을 구축.
+테이블 논리 구성, 작업 프로젝트 생성, 공유 repository 생성
+
+H2DB 라이브러리 추가 및 활용(pom.xml파일과 properties 파일 수정,sql 파일을 프로젝트에 추가)
 
 1. 테이블 정의 : 기본키(Pk), 외래키(Fk), 널 허용 여부(Null/Not Null), 자동 증가(Auto Increment)설정을 포함한 테이블 정의.
-2. 테이블 생성 : cloth, category, user등 주요 테이블 및 외래키를 구성
-3. ERD 활용 : 엔터티-관계 다이어그램을 기반으로 테이블 간의 외래키 관계를 검증하여 데이터베이스의 무결성 유지
-4. Test Mapper를 작성하여 실시간 입출력 테스트
+2. 테이블 생성 : customerqna, comment, filedata, question 테이블 생성 및 외래키를 구성하고 테스트 용 데이터를 추가.
+<p align="center"><img src="https://github.com/user-attachments/assets/b1cd773c-52c1-46b7-a114-15dc377726ad" width="700"></p>
+3. Test Mapper를 작성한 뒤 h2-console실시간 입출력 테스트
+
 
 ---
 ## ERD 구성
 
-<img src="https://github.com/user-attachments/assets/6552cbfa-4483-448d-a442-34efdb730dc2" width="1000" height="1000">
+<img src="https://github.com/user-attachments/assets/f0f7ced3-da8c-47d2-b5fb-5f589e7c933b" width="600" height="700">
 
 ---
 
 
-## collaboration process
-<br><br>
-<p align="center"><img src="https://github.com/user-attachments/assets/79768f31-04f3-41b7-87d8-c68c1abd4857" width="1000"></p>
-<br><br><br><br>
-<p align="center">각 요소들의 설계 초안을 ppts 파일을 이용하여 부가 설명 진행</p>
-<br><br>
-<p align="center"><img src="https://github.com/user-attachments/assets/170dd687-22e0-4b12-b998-4bc0c42e981f" width="1000"></p>
-<br><br><br><br>
+## work process
+
+- 익명 게시판을 기획하고, 사용자 요구 사항을 분석하여 기능을 정의
+- 테스트 과정을 간편화 하기 위해 H2DB를 사용하여 데이터를 저장하고, 서버 시작 시 필요한 테이블들을 자동으로 생성하도록 초기화 스크립트를 작성
+- 기본적인 게시글 작성 및 댓글 기능을 구현한 후, 비밀번호를 통한 수정 및 삭제 기능을 추가
+- 관리자의 역할을 구분하여, 관리자로 로그인 후 게시글이나 댓글을 작성할 때 > 아이디와 비밀번호를 입력하는 절차를 생략하도록 구현
+- '관리자 답변 완료' 표시 기능을 통해 사용자에게 게시글 상태를 명확하게 전달할 수 있도록 구성
+- 자주 묻는 질문 페이지를 구성하고, 관리자가 내용을 추가하거나 삭제할 수 있는 기능을 구현
 
 ## FAQ
 
