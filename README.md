@@ -108,21 +108,20 @@
 <p align="center">
   <h2>Built With</h2>
    
-   Development
-   <br><br>
-    <img src="https://img.shields.io/badge/H2DB-%234479A1?labelColor=black">
-    <img src="https://img.shields.io/badge/Eclipse-2C2255?logo=eclipse&logoColor=white">
-    <img src="https://img.shields.io/badge/Spring%20boot-%236DB33F?logo=springboot&logoColor=white">
-    <img src="https://img.shields.io/badge/javascript-%23F7DF1E?logo=javascript&logoColor=black">
-    <img src="https://img.shields.io/badge/html-%23E34F26?logo=html5&logoColor=black">
- 
 
-
-Enviroment
-<br><br>
+<p>
+<img src="https://img.shields.io/badge/H2DB-%234479A1?labelColor=black">
+<img src="https://img.shields.io/badge/Eclipse-2C2255?logo=eclipse&logoColor=white">
+<img src="https://img.shields.io/badge/Spring%20boot-%236DB33F?logo=springboot&logoColor=white">
+<img src="https://img.shields.io/badge/javascript-%23F7DF1E?logo=javascript&logoColor=black">
+<img src="https://img.shields.io/badge/html-%23E34F26?logo=html5&logoColor=black">
 <img src="https://img.shields.io/badge/VSCode-0078D4?logo=visual%20studio%20code&logoColor=white">
 <img src="https://img.shields.io/badge/apachetomcat-%23F8DC75?logo=apachetomcat&logoColor=black">
+<img src="https://img.shields.io/badge/maven-%23C71A36?logo=apachemaven&logoColor=white&color=orange">
 <img src="https://img.shields.io/badge/git-%23F05032?logo=git&logoColor=black">
+
+</p>
+
 
 
 
